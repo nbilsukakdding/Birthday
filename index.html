@@ -158,8 +158,8 @@
         </div>
         
         <div class="space-y-1">
-            <h2 class="text-xl font-cute font-bold text-slate-800">Eitss, Dikunci Dulu! 🔒</h2>
-            <p class="text-xs text-slate-500 font-sans">Masukkan PIN rahasia untuk membuka kado ini</p>
+            <h2 class="text-xl font-cute font-bold text-slate-800">Eitss, Masukkin Kode Rahasia dulu 😜🔒</h2>
+            <p class="text-xs text-slate-500 font-sans">Masukkan Kode Rahasia duluuu 🤫</p>
         </div>
 
         <!-- Input PIN & Efek Suara -->
@@ -167,15 +167,15 @@
             <audio id="correctSound" src="benar.mp3"></audio>
             <audio id="wrongSound" src="salah.mp3"></audio>
 
-            <input type="password" id="pinInput" placeholder="Masukkan Kode Rahasia..." maxlength="6" 
+            <input type="text" id="pinInput" inputmode="numeric" pattern="[0-9]*" placeholder="Masukkan Kode Rahasia..." maxlength="6" 
                    class="w-full text-center text-xl font-bold tracking-widest px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-pink-400 focus:outline-none transition-all placeholder:text-sm placeholder:tracking-normal placeholder:font-normal text-slate-800">
             
             <button onclick="checkPin()" 
                     class="w-full bg-pink-400 hover:bg-pink-500 text-white font-cute font-bold py-3 rounded-2xl shadow-lg shadow-pink-200 transition-all active:scale-95">
-                Buka Slide Kiriman 💖
+                Buka Kado Kiriman Bubub 💖
             </button>
             
-            <p id="pinError" class="text-xs text-rose-500 font-medium hidden">PIN salah, coba ingat-ingat lagi ya sayang! 🥺</p>
+            <p id="pinError" class="text-xs text-rose-500 font-medium hidden"> Yah Kode rahasianya salah, coba inget inget lagii 🥺</p>
         </div>
     </div>
 </div>
