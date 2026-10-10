@@ -148,27 +148,26 @@
     </style>
 </head>
 <body class="bg-slate-900 text-slate-800 flex flex-col items-center justify-center min-h-screen p-2 sm:p-4">
-     
-    <audio id="correctSound" src="benar.mp3"></audio>
-    <audio id="wrongSound" src="salah.mp3"></audio>
-    \
-    <!-- LAYAR LOCK SCREEN PIN AWALAN -->
-     <div id="lockScreen" class="fixed inset-0 bg-[#2b262d] flex flex-col items-center justify-center z-[999] p-4 transition-all duration-700">
-         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border-4 border-pink-200 text-center max-w-sm w-full flex flex-col items-center gap-4">
+   <!-- LAYAR LOCK SCREEN PIN AWALAN -->
+<div id="lockScreen" class="fixed inset-0 bg-[#2b262d] flex flex-col items-center justify-center z-50 p-4 transition-all duration-700">
+    <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border-4 border-pink-200 text-center max-w-sm w-full flex flex-col items-center gap-4">
         
         <!-- Icon Kucing Melayang Lucu -->
-             <div class="animate-cute-icon text-pink-500 bg-pink-50 p-4 rounded-full border-2 border-pink-200 shadow-inner">
+        <div class="animate-cute-icon text-pink-500 bg-pink-50 p-4 rounded-full border-2 border-pink-200 shadow-inner">
             <i data-lucide="cat" class="w-12 h-12"></i>
-             </div>
+        </div>
         
-             <div class="space-y-1">
-            <h2 class="text-xl font-cute font-bold text-slate-800">Eitss, Sebelum masuk ke menu utama buka gembok dulu 😜🔒</h2>
-            <p class="text-xs text-slate-500 font-sans">Masukkan PIN rahasia kamu untuk membuka kado ini</p>
-             </div>
+        <div class="space-y-1">
+            <h2 class="text-xl font-cute font-bold text-slate-800">Eitss, Dikunci Dulu! 🔒</h2>
+            <p class="text-xs text-slate-500 font-sans">Masukkan PIN rahasia untuk membuka kado ini</p>
+        </div>
 
-         <!-- Kotak Input PIN -->
-             <div class="w-full space-y-3">
-            <input type="password" id="pinInput" placeholder="Masukkan PIN..." maxlength="6" 
+        <!-- Input PIN & Efek Suara -->
+        <div class="w-full space-y-3">
+            <audio id="correctSound" src="benar.mp3"></audio>
+            <audio id="wrongSound" src="salah.mp3"></audio>
+
+            <input type="password" id="pinInput" placeholder="Masukkan Kode Rahasia..." maxlength="6" 
                    class="w-full text-center text-xl font-bold tracking-widest px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-pink-400 focus:outline-none transition-all placeholder:text-sm placeholder:tracking-normal placeholder:font-normal text-slate-800">
             
             <button onclick="checkPin()" 
@@ -176,11 +175,10 @@
                 Buka Slide Kiriman 💖
             </button>
             
-            <!-- Pesan Error -->
-            <p id="pinError" class="text-xs text-rose-500 font-medium hidden">Yah salah, coba inget-inget lagi ya sayang.. 🥺</p>
-             </div>
-         </div>
-     </div>
+            <p id="pinError" class="text-xs text-rose-500 font-medium hidden">PIN salah, coba ingat-ingat lagi ya sayang! 🥺</p>
+        </div>
+    </div>
+</div>
     <!-- Floating Background Canvas for Hearts -->
     <canvas id="heartsCanvas"></canvas>
 
@@ -829,6 +827,7 @@
 
             animateHearts();
         }
+        
     </script>
 </body>
 </html>
