@@ -149,8 +149,8 @@
 </head>
 <body class="bg-slate-900 text-slate-800 flex flex-col items-center justify-center min-h-screen p-2 sm:p-4">
      
-    <audio id="correctSound" src="isian/benar.mp3"></audio>
-    <audio id="wrongSound" src="isian/salah.mp3"></audio>
+    <audio id="correctSound" src="benar.mp3"></audio>
+    <audio id="wrongSound" src="salah.mp3"></audio>
     \
     <!-- LAYAR LOCK SCREEN PIN AWALAN -->
      <div id="lockScreen" class="fixed inset-0 bg-[#2b262d] flex flex-col items-center justify-center z-[999] p-4 transition-all duration-700">
@@ -189,7 +189,7 @@
 
         <!-- Music Toggle -->
         <button id="musicToggleBtn" onclick="toggleAudio()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition-all">
-            <audio id="myAudio" src="isian/Song.mp3" loop></audio>
+            <audio id="myAudio" src="song.mp3" loop></audio>
             <i data-lucide="music" class="w-4 h-4" id="musicIcon"></i>
             <span id="musicBtnText">Musik: Off</span>
              <script src="script.js"></script>
@@ -217,7 +217,7 @@
                 <div class="flex flex-col items-center max-w-2xl mx-auto my-auto w-full">
                     <!-- Cute Animated Vector Doodle Illustration -->
                     <div class="relative mb-4 cursor-pointer group" onclick="triggerImageUpload('img-slide1')">
-                        <img id="img-slide1" src="isian/hihi.jpg" alt="Birthday Illustration" class="w-48 h-48 sm:w-60 sm:h-60 object-cover rounded-full border-4 border-white shadow-lg mx-auto transition duration-300 group-hover:scale-105">
+                        <img id="img-slide1" src="hihi.jpg" alt="Birthday Illustration" class="w-48 h-48 sm:w-60 sm:h-60 object-cover rounded-full border-4 border-white shadow-lg mx-auto transition duration-300 group-hover:scale-105">
                         <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded-full flex items-center justify-center text-white text-xs font-bold gap-1">
                             <i data-lucide="camera" class="w-5 h-5"></i> Ubah Foto
                         </div>
