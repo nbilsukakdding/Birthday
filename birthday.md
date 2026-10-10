@@ -1,0 +1,834 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Sayang - Presentation</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fredoka:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastelPink: '#FFD1DC',
+                        pastelPinkDark: '#F4A2B8',
+                        pastelCream: '#FFF9EE',
+                        pastelMint: '#D8EBD9',
+                        pastelLavender: '#E6E6FA',
+                        pastelYellow: '#FEF0BF',
+                        pastelBlue: '#D0E8F2',
+                        darkText: '#332C2E',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        hand: ['"Caveat"', 'cursive'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        cute: ['"Fredoka"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #332C2E;
+            user-select: none;
+            overflow-x: hidden;
+            background-color: #2b262d;
+        }
+
+        .font-handwriting {
+            font-family: 'Caveat', cursive;
+        }
+
+        .font-cute {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Slide container ratio */
+        .slide-deck {
+            aspect-ratio: 16 / 9;
+            max-height: 85vh;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .slide-deck {
+                aspect-ratio: auto;
+                min-height: 80vh;
+            }
+        }
+
+        /* Editable visual cue when edit mode is active */
+        .edit-mode-active [contenteditable="true"] {
+            outline: 2px dashed #f43f5e !important;
+            outline-offset: 4px;
+            border-radius: 6px;
+            cursor: text;
+            transition: all 0.2s ease;
+        }
+
+        .edit-mode-active [contenteditable="true"]:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Polaroid card tilt styles */
+        .polaroid-card {
+            background: white;
+            padding: 12px 12px 24px 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .polaroid-card:hover {
+            transform: translateY(-6px) scale(1.02) rotate(0deg) !important;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+            z-index: 20;
+        }
+
+        /* Floating particles canvas */
+        #heartsCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f4a2b8;
+            border-radius: 10px;
+        }
+
+        /* Pulsing animation */
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        .animate-pulse-glow {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+
+        /* Wiggle animation for cute badges */
+        @keyframes subtleWiggle {
+            0%, 100% { transform: rotate(-1.5deg); }
+            50% { transform: rotate(1.5deg); }
+        }
+        .animate-wiggle {
+            animation: subtleWiggle 4s ease-in-out infinite;
+        }
+
+        .custom-drop-shadow {
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.06));
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-800 flex flex-col items-center justify-center min-h-screen p-2 sm:p-4">
+     
+    <audio id="correctSound" src="isian/benar.mp3"></audio>
+    <audio id="wrongSound" src="isian/salah.mp3"></audio>
+    \
+    <!-- LAYAR LOCK SCREEN PIN AWALAN -->
+     <div id="lockScreen" class="fixed inset-0 bg-[#2b262d] flex flex-col items-center justify-center z-[999] p-4 transition-all duration-700">
+         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border-4 border-pink-200 text-center max-w-sm w-full flex flex-col items-center gap-4">
+        
+        <!-- Icon Kucing Melayang Lucu -->
+             <div class="animate-cute-icon text-pink-500 bg-pink-50 p-4 rounded-full border-2 border-pink-200 shadow-inner">
+            <i data-lucide="cat" class="w-12 h-12"></i>
+             </div>
+        
+             <div class="space-y-1">
+            <h2 class="text-xl font-cute font-bold text-slate-800">Eitss, Sebelum masuk ke menu utama buka gembok dulu 😜🔒</h2>
+            <p class="text-xs text-slate-500 font-sans">Masukkan PIN rahasia kamu untuk membuka kado ini</p>
+             </div>
+
+         <!-- Kotak Input PIN -->
+             <div class="w-full space-y-3">
+            <input type="password" id="pinInput" placeholder="Masukkan PIN..." maxlength="6" 
+                   class="w-full text-center text-xl font-bold tracking-widest px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-pink-400 focus:outline-none transition-all placeholder:text-sm placeholder:tracking-normal placeholder:font-normal text-slate-800">
+            
+            <button onclick="checkPin()" 
+                    class="w-full bg-pink-400 hover:bg-pink-500 text-white font-cute font-bold py-3 rounded-2xl shadow-lg shadow-pink-200 transition-all active:scale-95">
+                Buka Slide Kiriman 💖
+            </button>
+            
+            <!-- Pesan Error -->
+            <p id="pinError" class="text-xs text-rose-500 font-medium hidden">Yah salah, coba inget-inget lagi ya sayang.. 🥺</p>
+             </div>
+         </div>
+     </div>
+    <!-- Floating Background Canvas for Hearts -->
+    <canvas id="heartsCanvas"></canvas>
+
+    <!-- Top Action Toolbar -->
+    <header class="fixed top-3 z-50 flex flex-wrap gap-2 items-center justify-center bg-white/80 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-pink-100 max-w-[95vw]">
+
+        <!-- Music Toggle -->
+        <button id="musicToggleBtn" onclick="toggleAudio()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition-all">
+            <audio id="myAudio" src="isian/Song.mp3" loop></audio>
+            <i data-lucide="music" class="w-4 h-4" id="musicIcon"></i>
+            <span id="musicBtnText">Musik: Off</span>
+             <script src="script.js"></script>
+        </button>
+
+        <!-- Confetti Trigger -->
+        <button onclick="triggerConfettiBurst()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-amber-50 hover:bg-amber-100 text-amber-700 transition-all">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Efek</span> Konfeti
+        </button>
+
+        <div class="h-4 w-[1px] bg-slate-300"></div>
+    </header>
+
+    <!-- Main Presentation Deck Window -->
+    <main class="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-pink-200/60 my-16 sm:my-12">
+        
+        <!-- Editable Slide Area -->
+        <div id="slideDeckContainer" class="slide-deck relative overflow-hidden">
+            
+            <!-- SLIDE 1: Cover Slide -->
+            <section class="slide-item active absolute inset-0 w-full h-full bg-pastelPink flex flex-col items-center justify-between p-6 text-center transition-opacity duration-500 z-10" id="slide-1">
+                <div class="text-xs text-slate-500 self-start tracking-wider opacity-70">By. nbil.19</div>
+                
+                <div class="flex flex-col items-center max-w-2xl mx-auto my-auto w-full">
+                    <!-- Cute Animated Vector Doodle Illustration -->
+                    <div class="relative mb-4 cursor-pointer group" onclick="triggerImageUpload('img-slide1')">
+                        <img id="img-slide1" src="isian/hihi.jpg" alt="Birthday Illustration" class="w-48 h-48 sm:w-60 sm:h-60 object-cover rounded-full border-4 border-white shadow-lg mx-auto transition duration-300 group-hover:scale-105">
+                        <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded-full flex items-center justify-center text-white text-xs font-bold gap-1">
+                            <i data-lucide="camera" class="w-5 h-5"></i> Ubah Foto
+                        </div>
+                    </div>
+
+                    <!-- Main Text Container -->
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-center gap-3 text-xl sm:text-3xl font-serif font-bold text-slate-900">
+                            <span contenteditable="true" data-key="s1_happy">Happy</span>
+                            <span contenteditable="true" data-key="s1_birthday">Birthday</span>
+                        </div>
+                        <h1 contenteditable="true" data-key="s1_name" class="text-4xl sm:text-7xl font-serif font-black tracking-tight text-slate-900 uppercase my-2">SAYANG</h1>
+                    </div>
+                </div>
+
+                <!-- Footer Bar -->
+                <div class="w-full bg-pink-300/40 backdrop-blur-sm py-2 px-6 rounded-2xl flex justify-between items-center text-xs sm:text-sm font-semibold text-slate-800">
+                    <span contenteditable="true" data-key="s1_footer_left">It's Your Special Day!</span>
+                    <span contenteditable="true" data-key="s1_date" class="px-3 py-1 bg-white/70 rounded-full font-mono font-bold">13.11.06😍❤</span>
+                    <span contenteditable="true" data-key="s1_footer_right">It's Your Special Day!</span>
+                </div>
+            </section>
+
+
+            <!-- SLIDE 2: Greeting & Intro -->
+            <section class="slide-item hidden absolute inset-0 w-full h-full bg-pastelCream p-6 sm:p-10 flex flex-col md:flex-row items-center justify-center gap-8 transition-opacity duration-500" id="slide-2">
+                <div class="w-full md:w-1/2 flex flex-col justify-center space-y-4">
+                    <h2 contenteditable="true" data-key="s2_title" class="text-3xl sm:text-5xl font-handwriting font-bold text-slate-800">Hai, sayang...</h2>
+                    
+                    <div contenteditable="true" data-key="s2_body" class="space-y-3 text-slate-700 text-base sm:text-xl leading-relaxed font-cute">
+                        <p>Hari ini adalah hari ulang tahun kamu.</p>
+                        <p class="text-pink-600 font-semibold">yang ke-20 yeyy 🎉</p>
+                        <p>Di hari spesial ini, ada banyak hal yang <span class="font-bold underline decoration-pink-400">ingin aku bilang ke kamu</span> 💌</p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 flex justify-center items-center relative">
+                    <!-- Photo Frame with Party Hat style -->
+                    <div class="polaroid-card rotate-3 relative max-w-xs group cursor-pointer" onclick="triggerImageUpload('img-slide2')">
+                        <div class="absolute -top-8 -right-4 z-10 text-4xl animate-bounce">🥳</div>
+                        <img id="img-slide2" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80" alt="Special Photo" class="w-full h-64 sm:h-72 object-cover rounded border border-slate-100">
+                        <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded flex items-center justify-center text-white text-xs font-bold gap-1">
+                            <i data-lucide="camera" class="w-5 h-5"></i> Ubah Foto
+                        </div>
+                        <p contenteditable="true" data-key="s2_caption" class="text-center font-handwriting text-xl text-slate-600 mt-3">si tukang marah - marah 😡</p>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SLIDE 3: Photo Timeline - Our Love Grows -->
+            <section class="slide-item hidden absolute inset-0 w-full h-full bg-pastelCream p-6 sm:p-10 flex flex-col justify-between transition-opacity duration-500" id="slide-3">
+                <div class="text-center">
+                    <h2 contenteditable="true" data-key="s3_title" class="text-3xl sm:text-6xl font-serif font-bold text-slate-900 tracking-tight">Our love grows</h2>
+                </div>
+
+                <!-- 3 Photo Polaroids Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 my-auto max-w-4xl mx-auto w-full">
+                    <!-- Frame 1 -->
+                    <div class="polaroid-card -rotate-3 cursor-pointer group" onclick="triggerImageUpload('img-slide3_1')">
+                        <div class="relative">
+                            <img id="img-slide3_1" src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=400&auto=format&fit=crop&q=80" class="w-full h-40 sm:h-48 object-cover rounded">
+                            <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded flex items-center justify-center text-white text-xs font-bold">Ubah Foto</div>
+                        </div>
+                        <p contenteditable="true" data-key="s3_tag1" class="text-center font-cute font-semibold text-xs tracking-wider text-slate-700 uppercase mt-3">PERTAMA KENALAN</p>
+                    </div>
+
+                    <!-- Frame 2 -->
+                    <div class="polaroid-card rotate-2 cursor-pointer group" onclick="triggerImageUpload('img-slide3_2')">
+                        <div class="relative">
+                            <img id="img-slide3_2" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80" class="w-full h-40 sm:h-48 object-cover rounded">
+                            <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded flex items-center justify-center text-white text-xs font-bold">Ubah Foto</div>
+                        </div>
+                        <p contenteditable="true" data-key="s3_tag2" class="text-center font-cute font-semibold text-xs tracking-wider text-slate-700 uppercase mt-3">PERTAMA JADIAN</p>
+                    </div>
+
+                    <!-- Frame 3 -->
+                    <div class="polaroid-card -rotate-2 cursor-pointer group" onclick="triggerImageUpload('img-slide3_3')">
+                        <div class="relative">
+                            <img id="img-slide3_3" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&auto=format&fit=crop&q=80" class="w-full h-40 sm:h-48 object-cover rounded">
+                            <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded flex items-center justify-center text-white text-xs font-bold">Ubah Foto</div>
+                        </div>
+                        <p contenteditable="true" data-key="s3_tag3" class="text-center font-cute font-semibold text-xs tracking-wider text-slate-700 uppercase mt-3">SEKARANG</p>
+                    </div>
+                </div>
+
+                <!-- Footer Caption -->
+                <div class="text-center">
+                    <p contenteditable="true" data-key="s3_footer" class="font-handwriting text-xl sm:text-2xl text-slate-700">every moment creates a memory. Asoyyy, Lebay ya maap dah🤍</p>
+                </div>
+            </section>
+
+
+            <!-- SLIDE 4: What makes you amazing -->
+            <section class="slide-item hidden absolute inset-0 w-full h-full bg-pastelMint/40 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto transition-opacity duration-500" id="slide-4">
+                <div class="text-center space-y-1">
+                    <h2 contenteditable="true" data-key="s4_title" class="text-3xl sm:text-5xl font-serif font-bold text-slate-900">What makes you amazing</h2>
+                    <p contenteditable="true" data-key="s4_subtitle" class="text-sm sm:text-base text-slate-600 font-cute">Banyak hal dari kamu yang bikin aku kagum — tapi ini yang paling aku suka:</p>
+                </div>
+
+                <!-- Sticky Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 my-auto max-w-4xl mx-auto w-full">
+                    <div class="bg-white/80 backdrop-blur p-4 rounded-2xl shadow-sm border border-emerald-100 flex flex-col justify-center">
+                        <p contenteditable="true" data-key="s4_card1" class="text-xs sm:text-sm font-cute text-slate-800">senyum dan ketawa km yang selalu bisa nenangin aku.</p>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur p-4 rounded-2xl shadow-sm border border-emerald-100 flex flex-col justify-center">
+                        <p contenteditable="true" data-key="s4_card2" class="text-xs sm:text-sm font-cute text-slate-800">kalo aku lg ngambek kamu selalu punya cara buat aku senyum lagi.</p>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur p-4 rounded-2xl shadow-sm border border-emerald-100 flex flex-col justify-center">
+                        <p contenteditable="true" data-key="s4_card3" class="text-xs sm:text-sm font-cute text-slate-800">cara peduli kamu dengan cara yang sederhana.</p>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur p-4 rounded-2xl shadow-sm border border-emerald-100 flex flex-col justify-center">
+                        <p contenteditable="true" data-key="s4_card4" class="text-xs sm:text-sm font-cute text-slate-800">kamu yg apa adanya tanpa bandingin diri km sm org lain.</p>
+                    </div>
+                </div>
+
+                <!-- Highlight Box -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-emerald-200 text-center max-w-2xl mx-auto w-full shadow-md">
+                    <p contenteditable="true" data-key="s4_highlight" class="font-cute font-bold text-xs sm:text-sm text-slate-800 uppercase tracking-wide">
+                        KAMU NGAK PERLU JADI SEMPURNA. KAMU YANG SEKARANG SUDAH LEBIH DARI CUKUP. ✨
+                    </p>
+                </div>
+            </section>
+
+
+            <!-- SLIDE 5: Long Heartfelt Love Letter -->
+            <section class="slide-item hidden absolute inset-0 w-full h-full bg-pastelCream p-4 sm:p-8 flex flex-col md:flex-row items-center gap-6 overflow-y-auto transition-opacity duration-500" id="slide-5">
+                <!-- Left Photo Side -->
+                <div class="w-full md:w-1/3 flex flex-col items-center">
+                    <div class="polaroid-card -rotate-2 max-w-xs cursor-pointer group" onclick="triggerImageUpload('img-slide5')">
+                        <div class="relative">
+                            <img id="img-slide5" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80" class="w-full h-48 sm:h-56 object-cover rounded">
+                            <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded flex items-center justify-center text-white text-xs font-bold">Ubah Foto</div>
+                        </div>
+                        <p contenteditable="true" data-key="s5_badge" class="text-center font-handwriting text-lg text-pink-600 mt-2">LOVE YOU ALWAYS ❤️</p>
+                    </div>
+                    
+                    <div class="mt-3 bg-pink-50 p-3 rounded-xl border border-pink-200 text-xs text-center text-pink-700 font-cute max-w-xs">
+                        <p contenteditable="true" data-key="s5_subquote">TERIMA KASIH SUDAH HADIR DI DUNIA DAN MENGISI HARI-HARIKU.</p>
+                    </div>
+                </div>
+
+                <!-- Right Letter Side -->
+                <div class="w-full md:w-2/3 flex flex-col justify-center space-y-2">
+                    <h2 contenteditable="true" data-key="s5_title" class="text-2xl sm:p-6 rounded-2xl border border-amber-100 shadow-sm text-xs sm:text-sm text-slate-700 leading-relaxed space-y-2 max-h-[55vh] overflow-y-auto font-sans">
+                        <p><strong>Happy birthday, sayang. 🎂</strong></p>
+                        <p>Hari ini aku cuma pengin kamu tahu kalau aku bersyukur banget bisa ketemu kamu. Dari sekian banyak orang yang bisa aku kenal, ternyata aku dipertemukan sama kamu, dan sampai sekarang aku masih ngerasa itu salah satu hal baik yang terjadi di hidup aku.</p>
+                        <p>Aku tahu mungkin aku nggak selalu bisa nuanjukin rasa sayang aku dengan cara yang sempurna. Kadang juga masih suka bikin kamu kesel, tapi satu hal yang pasti, aku sayang banget sama kamu dan aku selalu pengin lihat kamu bahagia.</p>
+                        <p>Aku suka banyak hal dari kamu. Cara kamu cerita, cara kamu perhatian, cara kamu ketawa, bahkan hal-hal kecil yang mungkin nggak pernah kamu anggap penting, gatau kenapa, semuanya selalu punya tempat sendiri di hati aku.</p>
+                        <p>Di umur kamu yang baru ini, aku berharap semoga hidup kamu jadi lebih ringan, lebih banyak bahagianya, dan semua yang kamu pingin bisa pelan-pelan terwujud. "Selamat ulang tahun, sayang. Aku seneng banget kamu lahir ke dunia ini." 🌸</p>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SLIDE 6: Oval Romantic Slide -->
+            <section class="slide-item hidden absolute inset-0 w-full h-full bg-pastelPink p-6 sm:p-10 flex flex-col items-center justify-between text-center transition-opacity duration-500" id="slide-6">
+                <!-- Top Doodle illustration header -->
+                <div class="flex items-center justify-center gap-2 text-pink-700">
+                    <i data-lucide="heart" class="w-6 h-6 fill-pink-500"></i>
+                    <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    <i data-lucide="heart" class="w-6 h-6 fill-pink-500"></i>
+                </div>
+
+                <!-- Center Oval Frame -->
+                <div class="relative my-auto cursor-pointer group" onclick="triggerImageUpload('img-slide6')">
+                    <div class="w-56 h-56 sm:w-80 sm:h-80 rounded-[50%] overflow-hidden border-8 border-white shadow-2xl mx-auto">
+                        <img id="img-slide6" src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&auto=format&fit=crop&q=80" class="w-full h-full object-cover">
+                    </div>
+                    <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded-[50%] flex items-center justify-center text-white text-sm font-bold">
+                        <i data-lucide="camera" class="w-6 h-6 mr-1"></i> Ubah Foto
+                    </div>
+                </div>
+
+                <!-- Bottom Bold Quote -->
+                <div class="max-w-2xl">
+                    <p contenteditable="true" data-key="s6_quote" class="text-sm sm:text-xl font-cute font-bold tracking-widest text-slate-900 uppercase">
+                        EVERYTHING IS SO MUCH MORE PERFECT WHEN I'M WITH YOU 💕
+                    </p>
+                </div>
+            </section>
+
+
+            <!-- SLIDE 7: Funny & Cute Moments -->
+            <section class="slide-item hidden absolute inset-0 w-full h-full bg-pastelMint/50 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto transition-opacity duration-500" id="slide-7">
+                <div class="text-center">
+                    <h2 contenteditable="true" data-key="s7_title" class="text-2xl sm:text-4xl font-handwriting font-bold text-slate-800">sedikit gambar yg ganteng poll</h2>
+                </div>
+
+                <!-- 3 Funny Photo Frames -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-auto max-w-4xl mx-auto w-full">
+                    <div class="polaroid-card -rotate-6 cursor-pointer group" onclick="triggerImageUpload('img-slide7_1')">
+                        <div class="relative">
+                            <img id="img-slide7_1" src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&auto=format&fit=crop&q=80" class="w-full h-36 sm:h-44 object-cover rounded">
+                            <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded flex items-center justify-center text-white text-xs font-bold">Ubah Foto</div>
+                        </div>
+                        <p contenteditable="true" data-key="s7_caption1" class="text-center font-handwriting text-lg text-slate-700 mt-2">Muka paling gemes 😂</p>
+                    </div>
+
+                    <div class="polaroid-card rotate-3 cursor-pointer group" onclick="triggerImageUpload('img-slide7_2')">
+                        <div class="relative">
+                            <img id="img-slide7_2" src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&auto=format&fit=crop&q=80" class="w-full h-36 sm:h-44 object-cover rounded">
+                            <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded flex items-center justify-center text-white text-xs font-bold">Ubah Foto</div>
+                        </div>
+                        <p contenteditable="true" data-key="s7_caption2" class="text-center font-handwriting text-lg text-pink-600 mt-2">i love you more syang ❤️</p>
+                    </div>
+
+                    <div class="polaroid-card -rotate-3 cursor-pointer group" onclick="triggerImageUpload('img-slide7_3')">
+                        <div class="relative">
+                            <img id="img-slide7_3" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80" class="w-full h-36 sm:h-44 object-cover rounded">
+                            <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded flex items-center justify-center text-white text-xs font-bold">Ubah Foto</div>
+                        </div>
+                        <p contenteditable="true" data-key="s7_caption3" class="text-center font-handwriting text-lg text-slate-700 mt-2">Mode candid 🤪</p>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <p contenteditable="true" data-key="s7_footer" class="text-xs sm:text-sm font-cute text-slate-600">Tetap jadi diri kamu yang selalu bikin aku tersenyum ya!</p>
+                </div>
+            </section>
+
+
+            <!-- SLIDE 8: My Wish for You -->
+            <section class="slide-item hidden absolute inset-0 w-full h-full bg-pastelMint p-6 sm:p-10 flex flex-col justify-between transition-opacity duration-500" id="slide-8">
+                <div>
+                    <h2 contenteditable="true" data-key="s8_title" class="text-3xl sm:text-6xl font-serif font-bold text-slate-900">My Wish for You</h2>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center gap-6 my-auto max-w-4xl mx-auto w-full">
+                    <!-- Wish Cards Container -->
+                    <div class="w-full md:w-2/3 space-y-3">
+                        <div class="bg-white/80 backdrop-blur p-3.5 rounded-2xl shadow-sm border border-emerald-200">
+                            <p contenteditable="true" data-key="s8_wish1" class="text-xs sm:text-sm font-cute text-slate-800">Semoga di usiamu saat ini, kamu makin kenal sama dirimu sendiri.</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur p-3.5 rounded-2xl shadow-sm border border-emerald-200">
+                            <p contenteditable="true" data-key="s8_wish2" class="text-xs sm:text-sm font-cute text-slate-800">Semoga semua yang kamu kejar pelan-pelan tercapai satu per satu.</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur p-3.5 rounded-2xl shadow-sm border border-emerald-200">
+                            <p contenteditable="true" data-key="s8_wish3" class="text-xs sm:text-sm font-cute text-slate-800">Semoga kamu selalu sehat, dikelilingi orang-orang yang tulus, dan selalu punya alasan untuk senyum.</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur p-3.5 rounded-2xl shadow-sm border border-emerald-200">
+                            <p contenteditable="true" data-key="s8_wish4" class="text-xs sm:text-sm font-cute text-slate-800">Dan semoga aku selalu jadi salah satu alasannya 💙</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Photo -->
+                    <div class="w-full md:w-1/3 flex justify-center">
+                        <div class="polaroid-card rotate-3 max-w-xs cursor-pointer group" onclick="triggerImageUpload('img-slide8')">
+                            <div class="relative">
+                                <img id="img-slide8" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop&q=80" class="w-full h-48 sm:h-56 object-cover rounded">
+                                <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded flex items-center justify-center text-white text-xs font-bold">Ubah Foto</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SLIDE 9: Please Remember -->
+            <section class="slide-item hidden absolute inset-0 w-full h-full bg-pastelCream p-6 sm:p-10 flex flex-col justify-between text-center transition-opacity duration-500" id="slide-9">
+                <div>
+                    <h2 contenteditable="true" data-key="s9_title" class="text-3xl sm:text-6xl font-serif font-bold text-slate-900">Please remember</h2>
+                </div>
+
+                <div class="max-w-2xl mx-auto space-y-6 my-auto">
+                    <div contenteditable="true" data-key="s9_body" class="space-y-2 text-sm sm:text-lg text-slate-700 font-cute leading-relaxed">
+                        <p>Kamu boleh ngersa gak sempurna.</p>
+                        <p>Kamu boleh ngerasa lelah dan menangis.</p>
+                        <p>Kamu boleh ngesara gak punya semua tapi jawabannya sekarang.</p>
+                    </div>
+
+                    <!-- Highlight Reassurance Card -->
+                    <div class="bg-pastelPink/60 p-6 rounded-3xl border-2 border-pink-300 shadow-md">
+                        <p contenteditable="true" data-key="s9_highlight" class="font-cute font-bold text-base sm:text-xl text-slate-900 tracking-wide uppercase">
+                            KAMU DICINTAI, DIKAGUMI, DAN BERARTI BANGET BUAT AKU 🤍
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center gap-2 text-pink-400">
+                    <i data-lucide="heart" class="w-6 h-6 fill-pink-400"></i>
+                    <i data-lucide="heart" class="w-8 h-8 fill-pink-400"></i>
+                    <i data-lucide="heart" class="w-6 h-6 fill-pink-400"></i>
+                </div>
+            </section>
+
+
+            <!-- SLIDE 10: Final Grand Finale -->
+            <section class="slide-item hidden absolute inset-0 w-full h-full bg-pastelPink p-6 sm:p-10 flex flex-col items-center justify-between text-center transition-opacity duration-500" id="slide-10">
+                <div class="text-xs text-slate-500 self-start tracking-wider opacity-70">Happy Birthday Sayang</div>
+
+                <div class="my-auto space-y-4 max-w-2xl">
+                    <div class="relative cursor-pointer group" onclick="triggerImageUpload('img-slide10')">
+                        <img id="img-slide10" src="https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&auto=format&fit=crop&q=80" class="w-40 h-40 sm:w-52 sm:h-52 object-cover rounded-full border-4 border-white shadow-xl mx-auto">
+                        <div class="upload-badge hidden absolute inset-0 bg-black/40 rounded-full flex items-center justify-center text-white text-xs font-bold">Ubah Foto</div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-center gap-3 text-2xl sm:text-4xl font-serif font-bold text-slate-900">
+                            <span contenteditable="true" data-key="s10_happy">Happy</span>
+                            <span contenteditable="true" data-key="s10_birthday">Birthday</span>
+                        </div>
+                        <h1 contenteditable="true" data-key="s10_name" class="text-4xl sm:text-7xl font-serif font-black tracking-tight text-slate-900 uppercase">SAYANG</h1>
+                    </div>
+
+                    <p contenteditable="true" data-key="s10_subtitle" class="text-xs sm:text-sm font-cute font-bold tracking-wider text-pink-800 uppercase max-w-lg mx-auto">
+                        I LOVE YOU FROM THE BOTTOM OF MY HEART — SELAMANYA. 💕
+                    </p>
+                </div>
+
+                <button onclick="triggerConfettiBurst()" class="px-6 py-2.5 bg-white rounded-full shadow-md text-pink-600 font-bold text-sm hover:scale-105 transition-transform">
+                    🎉 Rayakan Lagi!
+                </button>
+            </section>
+
+        </div>
+
+        <!-- Hidden File Input for uploading custom photos -->
+        <input type="file" id="imageUploader" accept="image/*" class="hidden" onchange="handleImageSelected(event)">
+
+        <!-- Slide Deck Bottom Control Bar -->
+        <div class="bg-white/95 border-t border-pink-100 p-3 sm:p-4 flex items-center justify-between gap-2">
+            <!-- Previous Button -->
+            <button onclick="prevSlide()" class="p-2 sm:px-4 sm:py-2 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 font-bold text-xs sm:text-sm flex items-center gap-1 transition">
+                <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                <span class="hidden sm:inline">Sebelumnya</span>
+            </button>
+
+            <!-- Slide Indicator Dots & Counter -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <div id="dotIndicators" class="flex gap-1 sm:gap-1.5"></div>
+                <span id="slideCounter" class="text-xs font-mono font-semibold text-slate-500 ml-2">1/10</span>
+            </div>
+
+            <!-- Next Button -->
+            <button onclick="nextSlide()" class="p-2 sm:px-4 sm:py-2 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs sm:text-sm flex items-center gap-1 transition shadow-md">
+                <span class="hidden sm:inline">Lanjut</span>
+                <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // State variables
+        let currentSlide = 1;
+        const totalSlides = 10;
+        let isEditMode = false;
+        let activeTargetImageId = null;
+        let audioContext = null;
+        let isAudioPlaying = false;
+        let audioInterval = null;
+
+        // Initialize lucide icons
+        window.onload = function() {
+            lucide.createIcons();
+            buildDotIndicators();
+            loadSavedContent();
+            setupEditableListeners();
+            initHeartsCanvas();
+            setupTouchNavigation();
+        };
+
+        // Slide Navigation Logic
+        function showSlide(index) {
+            if (index < 1) index = totalSlides;
+            if (index > totalSlides) index = 1;
+
+            document.querySelectorAll('.slide-item').forEach((slide, idx) => {
+                if (idx + 1 === index) {
+                    slide.classList.remove('hidden');
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.add('hidden');
+                    slide.classList.remove('active');
+                }
+            });
+
+            currentSlide = index;
+            updateIndicators();
+
+            if (currentSlide === totalSlides || currentSlide === 1) {
+                triggerConfettiBurst();
+            }
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Indicator Dots
+        function buildDotIndicators() {
+            const container = document.getElementById('dotIndicators');
+            container.innerHTML = '';
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = `w-2.5 h-2.5 rounded-full transition-all ${i === 1 ? 'bg-pink-500 w-5' : 'bg-slate-300'}`;
+                dot.onclick = () => showSlide(i);
+                dot.id = `dot-${i}`;
+                container.appendChild(dot);
+            }
+        }
+
+        function updateIndicators() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (dot) {
+                    if (i === currentSlide) {
+                        dot.className = 'w-5 h-2.5 rounded-full bg-pink-500 transition-all';
+                    } else {
+                        dot.className = 'w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-pink-300 transition-all';
+                    }
+                }
+            }
+            document.getElementById('slideCounter').innerText = `${currentSlide}/${totalSlides}`;
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (isEditMode && document.activeElement && document.activeElement.isContentEditable) {
+                return; // don't switch slides while editing text
+            }
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Touch Swipe Navigation
+        function setupTouchNavigation() {
+            let touchStartX = 0;
+            let touchEndX = 0;
+            const deck = document.getElementById('slideDeckContainer');
+
+            deck.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            deck.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 50) {
+                    nextSlide(); // Swiped left
+                } else if (touchEndX - touchStartX > 50) {
+                    prevSlide(); // Swiped right
+                }
+            }, { passive: true });
+        }
+
+        // Custom Photo Upload Handler
+        function triggerImageUpload(imageId) {
+            if (!isEditMode) return;
+            activeTargetImageId = imageId;
+            document.getElementById('imageUploader').click();
+        }
+
+        function handleImageSelected(event) {
+            const file = event.target.files[0];
+            if (file && activeTargetImageId) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgEl = document.getElementById(activeTargetImageId);
+                    if (imgEl) {
+                        imgEl.src = e.target.result;
+                        saveAllContent();
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Save & Load Content with LocalStorage
+        function saveAllContent() {
+            const data = {
+                texts: {},
+                images: {}
+            };
+
+            // Save text
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                data.texts[key] = el.innerHTML;
+            });
+
+            // Save images
+            document.querySelectorAll('img[id^="img-"]').forEach(img => {
+                data.images[img.id] = img.src;
+            });
+
+            localStorage.setItem('birthday_presentation_data', JSON.stringify(data));
+            
+            showToast("Perubahan berhasil disimpan! ✨");
+        }
+
+        function loadSavedContent() {
+            const saved = localStorage.getItem('birthday_presentation_data');
+            if (!saved) return;
+
+            try {
+                const data = JSON.parse(saved);
+                if (data.texts) {
+                    Object.keys(data.texts).forEach(key => {
+                        const el = document.querySelector(`[data-key="${key}"]`);
+                        if (el) el.innerHTML = data.texts[key];
+                    });
+                }
+                if (data.images) {
+                    Object.keys(data.images).forEach(id => {
+                        const img = document.getElementById(id);
+                        if (img) img.src = data.images[id];
+                    });
+                }
+            } catch (err) {
+                console.error("Gagal memuat data tersimpan:", err);
+            }
+        }
+
+        function resetDefaultContent() {
+            if (confirm("Apakah kamu yakin ingin mengembalikan semua teks dan foto ke tampilan awal?")) {
+                localStorage.removeItem('birthday_presentation_data');
+                location.reload();
+            }
+        }
+
+        function setupEditableListeners() {
+            document.querySelectorAll('[data-key]').forEach(el => {
+                el.contentEditable = "false"; // Default to false until edit mode
+            });
+        }
+
+        // Toast Notification System
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-full shadow-lg transition-opacity duration-300';
+            toast.innerText = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        // Confetti Burst Effect
+        function triggerConfettiBurst() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#FFD1DC', '#F4A2B8', '#FEF0BF', '#D8EBD9', '#E6E6FA']
+                });
+            }
+        }
+
+        // Background Hearts Animation
+        function initHeartsCanvas() {
+            const canvas = document.getElementById('heartsCanvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const hearts = Array.from({ length: 25 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 12 + 8,
+                speedY: Math.random() * 0.8 + 0.3,
+                opacity: Math.random() * 0.5 + 0.2
+            }));
+
+            function drawHeart(x, y, size, opacity) {
+                ctx.save();
+                ctx.globalAlpha = opacity;
+                ctx.fillStyle = '#FFD1DC';
+                ctx.beginPath();
+                const d = size;
+                ctx.moveTo(x, y + d / 4);
+                ctx.quadraticCurveTo(x, y, x + d / 4, y);
+                ctx.quadraticCurveTo(x + d / 2, y, x + d / 2, y + d / 4);
+                ctx.quadraticCurveTo(x + d / 2, y, x + (d * 3) / 4, y);
+                ctx.quadraticCurveTo(x + d, y, x + d, y + d / 4);
+                ctx.quadraticCurveTo(x + d, y + d / 2, x + (d * 3) / 4, y + (d * 3) / 4);
+                ctx.lineTo(x + d / 2, y + d);
+                ctx.lineTo(x + d / 4, y + (d * 3) / 4);
+                ctx.quadraticCurveTo(x, y + d / 2, x, y + d / 4);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            function animateHearts() {
+                ctx.clearRect(0, 0, width, height);
+                hearts.forEach(h => {
+                    h.y -= h.speedY;
+                    if (h.y < -20) {
+                        h.y = height + 20;
+                        h.x = Math.random() * width;
+                    }
+                    drawHeart(h.x, h.y, h.size, h.opacity);
+                });
+                requestAnimationFrame(animateHearts);
+            }
+
+            animateHearts();
+        }
+    </script>
+</body>
+</html>
